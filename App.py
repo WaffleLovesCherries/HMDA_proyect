@@ -39,4 +39,4 @@ load_base_callbacks( app=app )
 
 # Server
 if __name__ == '__main__':
-    app.run_server( debug=True )
+    app.run_server( debug=False, host='0.0.0.0', port=int(os.environ.get("PORT", 8080)) )
