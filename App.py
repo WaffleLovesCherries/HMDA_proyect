@@ -3,7 +3,7 @@ from dash import Dash, Input, Output, html, dcc
 import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 
-from Components.Navbar import Navbar
+from Components.Navbar import navbar, load_navbar_callbacks
 
 from Pages.EDAPage import render_eda_page, load_eda_callbacks
 from Pages.ModelBasePage import render_base_page, load_base_callbacks
@@ -20,27 +20,24 @@ app = Dash(
     suppress_callback_exceptions = True, 
     external_stylesheets = [ dbc.themes.PULSE, dbc.icons.BOOTSTRAP ] 
 )
-load_figure_template( 'pulse' )
-
-pages = {
-    '/': render_eda_page,
-    '/eda': render_eda_page,
-    '/models-base': render_base_page,
-    '/selection': render_eda_page
-}
+load_figure_template( ['pulse'] )
 
 # Layout
 app.layout = html.Div([
-    Navbar(app, pages),
+    navbar,
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ], style={'backgroundColor': '#f5f3ff', 'height': '100vh'} )
 
 # Callbacks
+load_navbar_callbacks( app=app, page_dict={
+    '/eda': render_eda_page,
+    '/models-base': render_base_page,
+    '/selection': render_eda_page
+})
 load_eda_callbacks( app=app )
 load_base_callbacks( app=app )
 
 # Server
 if __name__ == '__main__':
-    #app.run_server( debug=True, host='0.0.0.0', port=int(os.environ.get("PORT", 8080)) )
-    app.run_server( debug=True )
+    app.run_server( debug=False, host='0.0.0.0', port=int(os.environ.get("PORT", 8080)) )
